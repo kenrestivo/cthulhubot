@@ -27,6 +27,7 @@
 
 
 (defn stream->mentions
+  "Takes a stream, returns all the room id's in which the bot was mentioned."
   [stream]
   ;; could be a transducer maybe?
   (->> (for [[room evs] (some-> stream
@@ -38,6 +39,7 @@
                         (map #(some->> % :content :body))
                         (filter (fn [x]
                                   (and (string? x)
+                                       ;; TODO: make this configurable?  maybe cthulhu is taken on this homeserver?
                                        (.contains (.toLowerCase x) "cthulhu"))))
                         count)])
        (filter (comp pos? second))
@@ -46,6 +48,7 @@
 
 
 (defn stream->invites
+  "Takes a stream, returns all the room id's to which the bot was invited."
   [stream]
   ;; could be a transducer maybe?
   (->> (for [[room evs] (some-> stream
@@ -64,6 +67,9 @@
        (map name)))
 
 (defn sync
+  "Takes token, matrix base url, a timeout in milliseconds, 
+   and a since (next_batch) stamp in matrix format.
+   Returns a stream of events from matrix"
   [token base-url timeout_ms since]
   (client/get (format "%s/_matrix/client/r0/sync" base-url) 
               {:content-type :json
@@ -76,6 +82,7 @@
                :form-params {}}))
 
 (defn join-room!
+  "Given a token, base url, and room id, attempts to join it."
   [token base-url rheum-id ]
   (log/debug "joining" base-url rheum-id)
   (client/post (format "%s/_matrix/client/r0/rooms/%s/join"
@@ -91,6 +98,8 @@
 
 
 (defn send-message!
+  "Takes a token, matrix server base url, a room  id, and the text of the message.
+   Sends it to that room."
   [token base-url   rheum-id  msg]
   (log/trace "sending" base-url rheum-id msg)
   (client/post (format "%s/_matrix/client/r0/rooms/%s/send/m.room.message"
@@ -106,6 +115,8 @@
 
 
 (defn process-stream!
+  "Takes a token, a matrix base url, and a stream.
+   Processes each event on the stream, and does side-effecting things like spin off replies."
   [token base-url stream]
   (log/trace "processing stream" base-url)
   (doseq [room (stream->invites stream)]
@@ -116,7 +127,10 @@
              (log/debug "sending message to" room)
              (send-message! token base-url room (cthulhu/exclamation (+ 5 (rand-int 25))))))))
 
+
+
 (defn run-sync
+  "This is essentially the main loop, does not exit."
   [token base-url timeout initial-sync f]
   (log/info "starting loop" base-url timeout initial-sync f)
   (loop [nb initial-sync]

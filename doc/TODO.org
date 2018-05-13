@@ -1,0 +1,5 @@
+TODO for cthulhubot
+
+* TODO registration!
+* TODO initial sync
+* TODO make the  mentions bot name configuratble: cthulhu is definitely already taken on at least one homeserver
