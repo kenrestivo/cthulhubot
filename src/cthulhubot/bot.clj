@@ -5,13 +5,6 @@
             [clojure.edn :as edn]
             [cthulhubot.cthulhu :as cthulhu]
             [clj-http.util :as hutil]
-            [matrix-client-server-api.api.session-management :as sess]
-            [matrix-client-server-api.api.room-membership :as room-member]
-            [matrix-client-server-api.api.user-data :as user-data]
-            [matrix-client-server-api.api.room-discovery :as room-discovery]
-            [matrix-client-server-api.api.room-directory :as room-directory]
-            [matrix-client-server-api.api.presence :as presence]
-            [matrix-client-server-api.core :as matrix]
             [cheshire.core :as json]
             [clj-http.client :as client]))
 

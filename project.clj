@@ -6,7 +6,6 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [clj-http "3.9.0"]
                  [org.slf4j/log4j-over-slf4j "1.7.25"]
-                 [org.restivo/matrix-client-server-api "r0.3.0"]
                  [org.slf4j/slf4j-simple "1.7.25"]
                  [utilza "0.1.98"]
                  [com.taoensso/timbre "4.10.0"]
