@@ -4,6 +4,7 @@
             [taoensso.timbre :as log]
             [clojure.edn :as edn]
             [cthulhubot.cthulhu :as cthulhu]
+            [cthulhubot.matrix :as matrix]
             [clj-http.util :as hutil]
             [cheshire.core :as json]
             [clj-http.client :as client]))
@@ -12,6 +13,7 @@
 
 
 (defn toke
+  "Obtains a token saved in an EDN file map as :access_token"
   [filename]
   (-> filename
       slurp
@@ -59,53 +61,6 @@
        (map first)
        (map name)))
 
-(defn sync
-  "Takes token, matrix base url, a timeout in milliseconds, 
-   and a since (next_batch) stamp in matrix format.
-   Returns a stream of events from matrix"
-  [token base-url timeout_ms since]
-  (client/get (format "%s/_matrix/client/r0/sync" base-url) 
-              {:content-type :json
-               :as :json
-               :accept :json
-               :query-params {:since since
-                              :timeout timeout_ms
-                              :access_token token}
-               :throw-exceptions false
-               :form-params {}}))
-
-(defn join-room!
-  "Given a token, base url, and room id, attempts to join it."
-  [token base-url rheum-id ]
-  (log/debug "joining" base-url rheum-id)
-  (client/post (format "%s/_matrix/client/r0/rooms/%s/join"
-                       base-url
-                       (hutil/url-encode rheum-id)) 
-               {:content-type :json
-                :as :json
-                :accept :json
-                :query-params {:access_token token}
-                :throw-exceptions false
-                :form-params {}}))
-
-
-
-(defn send-message!
-  "Takes a token, matrix server base url, a room  id, and the text of the message.
-   Sends it to that room."
-  [token base-url   rheum-id  msg]
-  (log/trace "sending" base-url rheum-id msg)
-  (client/post (format "%s/_matrix/client/r0/rooms/%s/send/m.room.message"
-                       base-url
-                       (hutil/url-encode rheum-id)) 
-               {:content-type :json
-                :as :json
-                :accept :json
-                :query-params {:access_token token}
-                :throw-exceptions false
-                :form-params {:msgtype "m.text"
-                              :body msg}}))
-
 
 (defn process-stream!
   "Takes a token, a matrix base url, and a stream.
@@ -114,22 +69,25 @@
   (log/trace "processing stream" base-url)
   (doseq [room (stream->invites stream)]
     (future (ulog/catcher
-             (join-room! token base-url room))))
+             (matrix/join-room! token base-url room))))
   (doseq [room (stream->mentions stream)]
     (future (ulog/catcher
              (log/debug "sending message to" room)
-             (send-message! token base-url room (cthulhu/exclamation (+ 5 (rand-int 25))))))))
+             (matrix/send-message! token base-url room (cthulhu/exclamation (+ 5 (rand-int 25))))))))
 
 
 
 (defn run-sync
-  "This is essentially the main loop, does not exit."
+  "Takes a token, base-url to the matrix server, timout in milliseconds, 
+    an initial sync timestamp in matrix format, and a function to run on every stream returned from sync, 
+    which takes a token, base-url and the stream map.
+    This is essentially the main loop, does not exit."
   [token base-url timeout initial-sync f]
   (log/info "starting loop" base-url timeout initial-sync f)
   (loop [nb initial-sync]
     (log/trace "next loop" nb)
     (let [{:keys [next_batch] :as stream} (ulog/catcher
-                                           (:body (sync token base-url timeout nb)))]
+                                           (:body (matrix/sync token base-url timeout nb)))]
       (log/trace "next batch is:" next_batch)
       (ulog/catcher
        (f token base-url stream))

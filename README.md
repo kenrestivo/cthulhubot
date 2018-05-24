@@ -9,7 +9,6 @@ Via TEttinger via  https://gist.github.com/stathissideris/f1bced0dfdebdaf488eb
 
 ## Running
 
-
     $ java -jar cthulhubot-0.1.0-standalone.jar [args]
 
 ## Options
