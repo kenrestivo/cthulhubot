@@ -59,8 +59,9 @@
 
 
 (defn exclamation
-  [l]
-  (initial-capitalize (re-find #"\p{L}.+"(nested-str[(repeatedly l phrase)"."]))))
+  "Returns an exclamation of length words"
+  [length]
+  (initial-capitalize (re-find #"\p{L}.+" (nested-str [(repeatedly length phrase) "."]))))
 
 (defn speak!
   []
