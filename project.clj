@@ -1,6 +1,6 @@
 (defproject cthulhubot "0.1.0-SNAPSHOT"
   :description "Bring eldritch horrors to your Matrix chats"
-  :url "https://github.com/kenrestivo/cthulhubot"
+  :url "https://gitlab.com/kenrestivo/cthulhubot"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.9.0"]
