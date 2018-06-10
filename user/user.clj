@@ -2,6 +2,7 @@
   (:require [utilza.repl :as urepl]
             [utilza.log :as ulog]
             [taoensso.timbre :as log]
+            [cthulhubot.matrix :as m]
             [clojure.edn :as edn]
             [cthulhubot.bot :as bot]
             [clojure.java.io :as jio]
@@ -12,14 +13,14 @@
 
 (comment
 
-  ;; TODO: Initial poll
 
+
+  
   (def running
     (future
       (bot/run-sync (bot/toke "resources/cthulhu.edn")
                     "https://matrix.spaz.org"
                     60000
-                    "s48978_284186_3902_48241_32_21_246_1335"
                     bot/process-stream!)))
 
   
@@ -37,6 +38,15 @@
                      slurp
                      edn/read-string)]
      (:next_batch stream)))
+
+
+  (future
+    (ulog/spewer
+      (m/initial-sync (bot/toke "resources/cthulhu.edn")
+                      "https://matrix.spaz.org"
+                      60000)))
+
+
 
 
   

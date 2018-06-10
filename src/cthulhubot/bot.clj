@@ -77,7 +77,7 @@
 
 
 
-(defn run-sync
+(defn run-sync*
   "Takes a token, base-url to the matrix server, timout in milliseconds, 
     an initial sync timestamp in matrix format, and a function to run on every stream returned from sync, 
     which takes a token, base-url and the stream map.
@@ -92,4 +92,18 @@
       (ulog/catcher
        (f token base-url stream))
       (recur (or next_batch nb)))))
+
+(defn run-sync
+  "Takes a token, base-url to the matrix server, timout in milliseconds, 
+    and a function to run on every stream returned from sync, 
+    which takes a token, base-url and the stream map. Gets initial sync,
+    calls the main loop, and does not exit."
+  [token base-url timeout f]
+  (log/info "getting initial sync")
+  (let [initial-sync (-> (matrix/initial-sync token base-url timeout)
+                         :body
+                         :next_batch)]
+    (log/debug "initial sync found:" initial-sync)
+    (run-sync* token base-url timeout initial-sync f)))
+
 

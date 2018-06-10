@@ -8,8 +8,24 @@
             [cheshire.core :as json]
             [clj-http.client :as client]))
 
+;; TODO: Initial poll
+;; curl --globoff -XGET \
+;; 'https://localhost:8448/_matrix/client/r0/sync?\
+;; filter={"room":{"timeline":{"limit":1}}}\
+;; &access_token=YOUR_ACCESS_TOKEN'
 
 
+(defn initial-sync
+  [token base-url timeout_ms]
+  (client/get (format "%s/_matrix/client/r0/sync" base-url) 
+              {:content-type :json
+               :as :json
+               :accept :json
+               :query-params {:filter (json/encode {:room {:timeline {:limit 1}}})  
+                              :timeout timeout_ms
+                              :access_token token}
+               :throw-exceptions false
+               :form-params {}}))
 
 (defn sync
   "Takes token, matrix base url, a timeout in milliseconds, 
