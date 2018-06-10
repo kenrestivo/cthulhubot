@@ -1,8 +1,0 @@
-{:base-url "https://matrix.somewhere.com"
- :timeout 60000
- :creds {:access_token
-         "",
-         :home_server "",
-         :user_id "",
-         :device_id ""}}
-
