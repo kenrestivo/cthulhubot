@@ -1,21 +1,20 @@
 (ns cthulhubot.core
-  (:gen-class))
+  (:gen-class)
+  (:require [cthulhubot.bot :as bot]
+            [cthulhubot.config :as config]))
 
 (defn -main
-  [& args]
-  ;; TODO: read config and run the sync
-  )
+  [config-file]
+  (let [{:keys [base-url timeout creds]} (config/read-from-file config-file)
+        {:keys [access_token]} creds]
+    (bot/run-sync access_token
+                  base-url
+                  timeout
+                  bot/process-stream!)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (comment
 
-  ;;; XXX example for what main will need to do
-  (def running
-    (future
-      (bot/run-sync (bot/toke "resources/cthulhu.edn")
-                    "https://matrix.spaz.org"
-                    60000
-                    "s48978_284186_3902_48241_32_21_246_1335"
-                    bot/process-stream!)))
+
 
   )
