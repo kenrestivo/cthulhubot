@@ -28,7 +28,7 @@
   (future-done? running)
 
 
-  (log/set-level! :trace)
+  (log/set-level! :debug)
 
   (log/trace :wtf)
 
@@ -40,11 +40,6 @@
      (:next_batch stream)))
 
 
-  (future
-    (ulog/spewer
-      (m/initial-sync (bot/toke "resources/cthulhu.edn")
-                      "https://matrix.spaz.org"
-                      60000)))
 
 
 
