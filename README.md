@@ -1,19 +1,19 @@
 # cthulhubot
 
-A bot that brings eldritch horrors to your Matrix channel
+A bot that brings eldritch horrors to your Matrix channels.
 
 Via TEttinger via  https://gist.github.com/stathissideris/f1bced0dfdebdaf488eb 
 
 ## Installation
 
+Build with lein uberjar. Resulting uberjar will be in "target/" directory
+
+Or you can run it with lein run too.
 
 ## Running
 
-    $ java -jar cthulhubot-0.1.0-standalone.jar [args]
+    $ java -jar cthulhu.jar config-file.edn
 
-## Options
-
-FIXME: listing of options this app accepts.
 
 ## Examples
 
@@ -23,5 +23,4 @@ If you want to try the bot out, it's currently online and addressable at @cthulh
 
 Copyright © 2018 ken restivo <ken@restivo.org> and 2015 TEttinger
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
