@@ -18,7 +18,9 @@
                   "do" "trampoline" "repl" ":headless"]
             "slamhound" ["run" "-m" "slam.hound" "clj-src/"]
             }
-  :profiles {:uberjar {:aot :all}
+  :profiles {:uberjar {:uberjar-name "cthulhu.jar"
+                       :source-paths ["cljs-src"]
+                       :aot :all}
              :repl {:repl-options {:port 7777
                                    }}
              :user {:dependencies [[lein-ancient "0.6.15" 
